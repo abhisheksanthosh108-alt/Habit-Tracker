@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Track Progress</title>
+</head>
+
+<body style="background:#0f172a; color:white; text-align:center;">
+
+<h1>📊 Track Progress</h1>
+<p>Keep track of what you complete daily.</p>
+
+<br>
+
+<table border="1" cellpadding="15" align="center" width="70%" style="border-collapse: collapse;">
+
+    <tr style="background:#1e293b;">
+        <th>Date</th>
+        <th>Task</th>
+        <th>Status</th>
+    </tr>
+
+    {% for i in track %}
+    <tr>
+        <td>{{ i.task_date }}</td>
+        <td>{{ i.name }}</td>
+        <td>
+            {% if i.completed %}
+                Done
+            {% else %}
+                Pending
+            {% endif %}
+
+            <form method="POST" action="{% url 'toggle' i.id %}">
+                {% csrf_token %}
+                <button type="submit">
+                    change status
+                </button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+<br><br>
+
+<a href="{% url 'intro' %}" style="color:#38bdf8;">⬅ Back</a>
+
+</body>
+</html>

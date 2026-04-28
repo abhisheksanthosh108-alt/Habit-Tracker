@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Habits</title>
+</head>
+
+<body style="background:#0f172a; color:white; text-align:center;">
+
+<h1>➕ Add Habits</h1>
+<p>Create habits you want to build every day.</p>
+
+<a href="/">← Back</a>
+
+<form method="POST">
+    {% csrf_token %}
+    
+    <input type="text" name="habit" placeholder="Enter habit..." required>
+    <br><br>
+
+    <input type="date" name="date" required>
+    <br><br>
+
+    <button type="submit">Add Habit</button>
+</form>
+
+</body>
+</html>

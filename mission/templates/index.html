@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Habit Tracker</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI';
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: white;
+    text-align: center;
+}
+
+.container {
+    max-width: 900px;
+    margin: 100px auto;
+}
+
+.box {
+    background: #1e293b;
+    padding: 20px;
+    margin: 15px;
+    border-radius: 10px;
+}
+
+a {
+    color: #22c55e;
+    text-decoration: none;
+    display: block;
+    margin: 10px;
+}
+
+.btn {
+    background: #22c55e;
+    padding: 10px 20px;
+    border-radius: 10px;
+    display: inline-block;
+    color: white;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🔥 Habit Tracker</h1>
+
+    <p>Build better habits, stay consistent, and improve your life.</p>
+
+    <h2>What you can do</h2>
+
+    <div class="box">
+        <a href="{% url 'add' %}">➕ Add Habits</a>
+        <a href="{% url 'track' %}">📅 Track Progress</a>
+        <a href="{% url 'stay' %}">🎯 Stay Consistent</a>
+    </div>
+
+    <a href="{% url 'home' %}" class="btn">Start Tracking</a>
+    <a href="{% url 'about' %}">About</a>
+
+</div>
+
+</body>
+</html>
