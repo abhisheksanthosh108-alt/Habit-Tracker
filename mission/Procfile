@@ -1,1 +1,1 @@
-web: gunicorn miss.wsgi
+web: gunicorn mission.wsgi
