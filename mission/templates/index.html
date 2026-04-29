@@ -1,43 +1,152 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
 <title>Habit Tracker</title>
 
 <style>
 body {
-    margin: 0;
-    font-family: 'Segoe UI';
-    background: linear-gradient(135deg, #0f172a, #1e293b);
-    color: white;
-    text-align: center;
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+
+  background: linear-gradient(
+    rgba(255,255,255,0.85),
+    rgba(255,255,255,0.85)
+  ),
+  url("https://images.unsplash.com/photo-1492724441997-5dc865305da7");
+
+  background-size: cover;
+  background-position: center;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
 
 .container {
-    max-width: 900px;
-    margin: 100px auto;
+  width: 720px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 35px;
+  border-radius: 18px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.15);
 }
 
-.box {
-    background: #1e293b;
-    padding: 20px;
-    margin: 15px;
-    border-radius: 10px;
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-a {
-    color: #22c55e;
-    text-decoration: none;
-    display: block;
-    margin: 10px;
+/* MESSAGE */
+.message {
+  background: #22c55e;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 15px;
 }
 
-.btn {
-    background: #22c55e;
-    padding: 10px 20px;
-    border-radius: 10px;
-    display: inline-block;
-    color: white;
+/* ADD */
+.add-box {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.add-box input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.add-box button {
+  padding: 12px 18px;
+  background: #22c55e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+}
+
+/* DAYS */
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.today {
+  color: #22c55e;
+  font-weight: bold;
+}
+
+/* HABIT */
+.habit {
+  background: #f9fafb;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* CHECKS */
+.checks {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  margin-top: 8px;
+}
+
+/* CHECKBOX */
+input[type="checkbox"] {
+  appearance: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 2px solid #cbd5e1;
+}
+
+.today-box {
+  cursor: pointer;
+}
+
+.today-box:checked {
+  background: #22c55e;
+  border: none;
+}
+
+.past-box {
+  background: #ef4444;
+  opacity: 0.6;
+}
+
+.future-box {
+  background: #e5e7eb;
+}
+
+/* DELETE */
+.delete-btn {
+  background: #ef4444;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+/* SAVE */
+.save-btn {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  background: #22c55e;
+  color: white;
+  border: none;
+  border-radius: 10px;
 }
 </style>
 </head>
@@ -46,20 +155,63 @@ a {
 
 <div class="container">
 
-    <h1>🔥 Habit Tracker</h1>
+  <h1>Habit Tracker</h1>
 
-    <p>Build better habits, stay consistent, and improve your life.</p>
+  <!-- MESSAGES -->
+  {% if messages %}
+    {% for message in messages %}
+      <div class="message">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
 
-    <h2>What you can do</h2>
+  <!-- ADD -->
+  <form method="POST" class="add-box">
+    {% csrf_token %}
+    <input type="text" name="new_habit" placeholder="Add a new habit...">
+    <button>Add</button>
+  </form>
 
-    <div class="box">
-        <a href="{% url 'add' %}">➕ Add Habits</a>
-        <a href="{% url 'track' %}">📅 Track Progress</a>
-        <a href="{% url 'stay' %}">🎯 Stay Consistent</a>
+  <!-- TRACK -->
+  <form method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="save" value="1">
+
+    <div class="days">
+      {% for day in week %}
+        <span class="{% if day == today %}today{% endif %}">
+          {{ day|date:"D d" }}
+        </span>
+      {% endfor %}
     </div>
 
-    <a href="{% url 'home' %}" class="btn">Start Tracking</a>
-    <a href="{% url 'about' %}">About</a>
+    {% for habit, days in habit_data %}
+      <div class="habit">
+
+        <div class="row">
+          <strong>{{ habit.name }}</strong>
+          <a href="/delete/{{ habit.id }}/" class="delete-btn">Delete</a>
+        </div>
+
+        <div class="checks">
+          {% for d in days %}
+            {% if d.is_today %}
+              <input type="checkbox"
+                     class="today-box"
+                     name="{{ habit.id }}_{{ d.index }}"
+                     {% if d.done %}checked{% endif %}>
+            {% elif d.is_past %}
+              <input type="checkbox" class="past-box" disabled>
+            {% else %}
+              <input type="checkbox" class="future-box" disabled>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+      </div>
+    {% endfor %}
+
+    <button class="save-btn">Save Progress</button>
+  </form>
 
 </div>
 

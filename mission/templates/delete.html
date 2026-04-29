@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Delete Habit</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #f1f5f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.card {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+button {
+  margin: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+}
+
+.delete {
+  background: #ef4444;
+  color: white;
+}
+
+.cancel {
+  background: #e5e7eb;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h2>Delete "{{ habit.name }}"?</h2>
+  <p>This cannot be undone.</p>
+
+  <form method="POST">
+    {% csrf_token %}
+    <button class="delete">Delete</button>
+  </form>
+
+  <a href="/tracker/" class="cancel">Cancel</a>
+</div>
+
+</body>
+</html>

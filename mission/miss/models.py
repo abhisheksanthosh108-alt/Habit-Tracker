@@ -1,7 +1,13 @@
 from django.db import models
 
-# Create your models here.
 class Habit(models.Model):
-    name = models.CharField(max_length=200)
-    task_date = models.DateField()
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+class HabitDay(models.Model):
+    habit = models.ForeignKey(Habit, on_delete=models.CASCADE)
+    date = models.DateField()
     completed = models.BooleanField(default=False)
